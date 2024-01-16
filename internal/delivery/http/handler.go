@@ -74,6 +74,22 @@ func (h *TodoHandler) GetCompleted(c *gin.Context) {
 	c.JSON(200, gin.H{"completedTodos": completedTodos})
 }
 
+func (h *TodoHandler) GetUnCompleted(c *gin.Context) {
+    // GetUnCompleted retrieves all uncompleted todos.
+    unCompletedTodos, err := h.todoUseCase.GetUnCompleted()
+    if err != nil {
+        c.JSON(500, gin.H{"error": "error getting uncompleted todos"})
+        return
+    }
+
+    if len(unCompletedTodos) == 0 {
+        c.JSON(200, gin.H{"message": "No uncompleted todos found"})
+        return
+    }
+
+    c.JSON(200, gin.H{"unCompletedTodos": unCompletedTodos})
+}
+
 func (h *TodoHandler) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

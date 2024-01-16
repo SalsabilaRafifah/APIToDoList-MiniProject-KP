@@ -14,6 +14,7 @@ type TodoRepository interface {
 	Delete(id uint) error
 	MarkAsCompleted(id uint) error
 	GetCompleted() ([]domain.Todo, error)
+	GetUnCompleted() ([]domain.Todo, error)
 }
 
 //interface yang mendefinisikan kontrak untuk operasi bisnis pada entitas Todo.
@@ -26,6 +27,7 @@ type TodoUseCase interface {
 	Delete(id uint) error
 	MarkAsCompleted(id uint) error
 	GetCompleted() ([]domain.Todo, error)
+	GetUnCompleted() ([]domain.Todo, error)
 }
 
 //implementasi konkret dari TodoUseCase.
@@ -65,4 +67,18 @@ func (uc *todoUseCase) MarkAsCompleted(id uint) error {
 
 func (uc *todoUseCase) GetCompleted() ([]domain.Todo, error) {
 	return uc.todoRepository.GetCompleted()
+}
+
+// GetUnCompleted retrieves all uncompleted todos.
+func (uc *todoUseCase) GetUnCompleted() ([]domain.Todo, error) {
+    // Implement the logic to retrieve uncompleted todos from your storage (e.g., database).
+    // Return the list of uncompleted todos and any potential errors.
+
+    // Example implementation:
+    uncompletedTodos, err := uc.todoRepository.GetUnCompleted()
+    if err != nil {
+        return nil, err
+    }
+
+    return uncompletedTodos, nil
 }

@@ -47,6 +47,7 @@ func main() {
 	r.DELETE("/todos/:id", todoHandler.Delete)
 	r.PUT("/todos/:id/complete", todoHandler.MarkAsCompleted)
 	r.GET("/completed", todoHandler.GetCompleted)
+	r.GET("/todos/uncompleted", todoHandler.GetUnCompleted)
 
 	//menjalankan aplikasi Gin pada port 3000 sebagai default
 	port := os.Getenv("PORT")

@@ -17,6 +17,7 @@ type TodoRepository interface {
 	Delete(id uint) error
 	MarkAsCompleted(id uint) error
 	GetCompleted() ([]domain.Todo, error)
+	GetUnCompleted() ([]domain.Todo, error)
 }
 
 //implementasi konkret dari TodoRepository.
@@ -66,4 +67,10 @@ func (r *todoRepository) GetCompleted() ([]domain.Todo, error) {
 	var completedTodos []domain.Todo
 	err := r.db.Where("completed = ?", true).Find(&completedTodos).Error
 	return completedTodos, err
+}
+
+func (r *todoRepository) GetUnCompleted() ([]domain.Todo, error) {
+    var unCompletedTodos []domain.Todo
+    err := r.db.Where("completed = ?", false).Find(&unCompletedTodos).Error
+    return unCompletedTodos, err
 }
