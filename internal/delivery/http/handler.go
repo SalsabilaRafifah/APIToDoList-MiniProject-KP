@@ -75,7 +75,6 @@ func (h *TodoHandler) GetCompleted(c *gin.Context) {
 }
 
 func (h *TodoHandler) GetUnCompleted(c *gin.Context) {
-    // GetUnCompleted retrieves all uncompleted todos.
     unCompletedTodos, err := h.todoUseCase.GetUnCompleted()
     if err != nil {
         c.JSON(500, gin.H{"error": "error getting uncompleted todos"})

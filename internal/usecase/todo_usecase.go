@@ -69,16 +69,13 @@ func (uc *todoUseCase) GetCompleted() ([]domain.Todo, error) {
 	return uc.todoRepository.GetCompleted()
 }
 
-// GetUnCompleted retrieves all uncompleted todos.
 func (uc *todoUseCase) GetUnCompleted() ([]domain.Todo, error) {
-    // Implement the logic to retrieve uncompleted todos from your storage (e.g., database).
-    // Return the list of uncompleted todos and any potential errors.
-
-    // Example implementation:
+    // Mengambil uncompleted todos dari database
     uncompletedTodos, err := uc.todoRepository.GetUnCompleted()
     if err != nil {
         return nil, err
     }
 
+	// Mengembalikan daftar uncompleted todos 
     return uncompletedTodos, nil
 }
