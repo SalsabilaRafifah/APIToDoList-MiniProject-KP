@@ -36,11 +36,13 @@ type todoUseCase struct {
 	todoRepository TodoRepository
 }
 
-//membuat instance baru dari todoUseCase dengan dependensi TodoRepository.
+//Parameter todoRepository adalah instance dari interface TodoRepository digunakan sebagai dependensi untuk menghubungkan 'todoUseCase dengan lapisan repository
+//Function konstruktor untuk membuat dan mengembalikan instance baru dari todoUseCase dengan tipe data TodoUseCase yang merupakan interface operasi bisnis pada Todo
 func NewTodoUseCase(todoRepository TodoRepository) TodoUseCase {
 	return &todoUseCase{todoRepository}
 }
 
+//uc 
 func (uc *todoUseCase) Create(todo *domain.Todo) error {
 	return uc.todoRepository.Create(todo)
 }
@@ -70,12 +72,5 @@ func (uc *todoUseCase) GetCompleted() ([]domain.Todo, error) {
 }
 
 func (uc *todoUseCase) GetUnCompleted() ([]domain.Todo, error) {
-    // Mengambil uncompleted todos dari database
-    uncompletedTodos, err := uc.todoRepository.GetUnCompleted()
-    if err != nil {
-        return nil, err
-    }
-
-	// Mengembalikan daftar uncompleted todos 
-    return uncompletedTodos, nil
+	return uc.todoRepository.GetUnCompleted()
 }

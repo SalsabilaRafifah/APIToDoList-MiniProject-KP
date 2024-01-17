@@ -19,15 +19,16 @@ func NewTodoHandler(todoUseCase usecase.TodoUseCase) *TodoHandler {
 }
 
 func (h *TodoHandler) Create(c *gin.Context) {
-	// Menggunakan struct yang hanya berisi field selain Complete
+	// Struktur untuk mengambil data dari body request
 	type TodoCreateInput struct {
 		Title       string `json:"title"`
 		Description string `json:"description"`
 	}
 
-	// Parsing body request ke struct TodoCreateInput
+	// Mengikat data JSON dari body request ke dalam struktur TodoCreateInput.
 	var input TodoCreateInput
-	if err := c.ShouldBindJSON(&input); err != nil {
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
 		c.JSON(400, gin.H{"error": "error parsing request body"})
 		return
 	}
@@ -39,7 +40,7 @@ func (h *TodoHandler) Create(c *gin.Context) {
 		Completed:   false,
 	}
 
-	//Memanggil Create dari todoUseCase untuk menyimpan Todo ke dalam penyimpanan.
+	//Memanggil Create dari todoUseCase untuk menyimpan Todo ke dalam penyimpanan data.
 	if err := h.todoUseCase.Create(todo); err != nil {
 		c.JSON(500, gin.H{"error": "error creating todo"})
 		return
@@ -49,6 +50,7 @@ func (h *TodoHandler) Create(c *gin.Context) {
 }
 
 func (h *TodoHandler) GetAll(c *gin.Context) {
+	//untuk mendapatkan semua entitas Todo dari penyimpanan data.
 	todos, err := h.todoUseCase.GetAll()
 	if err != nil {
 		c.JSON(500, gin.H{"error": "error getting todos"})
@@ -58,38 +60,8 @@ func (h *TodoHandler) GetAll(c *gin.Context) {
 	c.JSON(200, gin.H{"todos": todos})
 }
 
-//Memanggil GetCompleted dari todoUseCase untuk mendapatkan daftar Todo yang sudah selesai.
-func (h *TodoHandler) GetCompleted(c *gin.Context) {
-	completedTodos, err := h.todoUseCase.GetCompleted()
-	if err != nil {
-		c.JSON(500, gin.H{"error": "error getting completed todos"})
-		return
-	}
-
-	if len(completedTodos) == 0 {
-		c.JSON(200, gin.H{"message": "No completed todos found"})
-		return
-	}
-
-	c.JSON(200, gin.H{"completedTodos": completedTodos})
-}
-
-func (h *TodoHandler) GetUnCompleted(c *gin.Context) {
-    unCompletedTodos, err := h.todoUseCase.GetUnCompleted()
-    if err != nil {
-        c.JSON(500, gin.H{"error": "error getting uncompleted todos"})
-        return
-    }
-
-    if len(unCompletedTodos) == 0 {
-        c.JSON(200, gin.H{"message": "No uncompleted todos found"})
-        return
-    }
-
-    c.JSON(200, gin.H{"unCompletedTodos": unCompletedTodos})
-}
-
 func (h *TodoHandler) GetByID(c *gin.Context) {
+	//mendapatkan entitas Todo berdasarkan ID
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(400, gin.H{"error": "invalid todo ID"})
@@ -112,14 +84,14 @@ func (h *TodoHandler) Update(c *gin.Context) {
 		return
 	}
 
-	// Dapatkan todo dari database berdasarkan ID
+	// Mendapatkan todo dari database berdasarkan ID
 	existingTodo, err := h.todoUseCase.GetByID(uint(id))
 	if err != nil {
 		c.JSON(404, gin.H{"error": "todo not found"})
 		return
 	}
 
-	// mengambil data JSON dari body permintaan HTTP dan mengubahnya menjadi objek Todo dengan menggunakan metode ShouldBindJSON dari framework web Gin
+	// mengambil data JSON dari body permintaan HTTP dan mengubahnya menjadi objek Todo
 	var updateData domain.Todo
 	if err := c.ShouldBindJSON(&updateData); err != nil {
 		c.JSON(400, gin.H{"error": "error parsing request body"})
@@ -183,4 +155,35 @@ func (h *TodoHandler) MarkAsCompleted(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "todo marked as completed successfully", "todo": existingTodo})
+}
+
+//Memanggil GetCompleted dari todoUseCase untuk mendapatkan daftar Todo yang sudah selesai.
+func (h *TodoHandler) GetCompleted(c *gin.Context) {
+	completedTodos, err := h.todoUseCase.GetCompleted()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "error getting completed todos"})
+		return
+	}
+
+	if len(completedTodos) == 0 {
+		c.JSON(200, gin.H{"message": "No completed todos found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"completedTodos": completedTodos})
+}
+
+func (h *TodoHandler) GetUnCompleted(c *gin.Context) {
+    unCompletedTodos, err := h.todoUseCase.GetUnCompleted()
+    if err != nil {
+        c.JSON(500, gin.H{"error": "error getting uncompleted todos"})
+        return
+    }
+
+    if len(unCompletedTodos) == 0 {
+        c.JSON(200, gin.H{"message": "No uncompleted todos found"})
+        return
+    }
+
+    c.JSON(200, gin.H{"unCompletedTodos": unCompletedTodos})
 }
