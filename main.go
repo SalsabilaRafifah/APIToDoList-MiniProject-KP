@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin" // menangani permintaan HTTP dan membangun API RESTful.
-	"github.com/joho/godotenv"
+	"github.com/joho/godotenv" // membaca variabel lingkungan dari file .env
 
 	"log"
 	"os"
@@ -14,15 +14,16 @@ import (
 	"github.com/salsabilarafifah/API-ToDoList/internal/usecase"
 )
 
-// dieksekusi sebelum fungsi main memuat variabel lingkungan
+// dieksekusi sebelum fungsi main untuk memuat variabel lingkungan menggunakan library godontev
 func init() {
-	if err := godotenv.Load(); err != nil {
+	err := godotenv.Load(".env"); 
+	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 }
 
 func main() {
-	//menginisialisasi router Gin
+	//menginisialisasi router Gin untuk menangani HTTP requests.
 	r := gin.Default()
 
 	//terhubung ke database
@@ -31,7 +32,7 @@ func main() {
 		log.Fatal("Error connecting to the database: ", err)
 	}
 
-	//melakukan migrasi model Todo ke database
+	//melakukan migrasi otomatis model Todo ke database
 	db.AutoMigrate(&domain.Todo{})
 
 	//menyiapkan rute HTTP

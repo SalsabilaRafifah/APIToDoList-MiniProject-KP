@@ -13,7 +13,7 @@ type TodoHandler struct {
 	todoUseCase usecase.TodoUseCase
 }
 
-//konstruktor untuk membuat instance dari TodoHandler
+//konstruktor untuk membuat instance baru dari TodoHandler dengan dependensi TodoUsecase
 func NewTodoHandler(todoUseCase usecase.TodoUseCase) *TodoHandler {
 	return &TodoHandler{todoUseCase}
 }

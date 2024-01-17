@@ -27,7 +27,7 @@ type todoRepository struct {
 	db *gorm.DB
 }
 
-//Membuat instance baru dari todoRepository dengan koneksi database GORM.
+//Membuat instance baru dari todoRepository dengan menyediakan koneksi database GORM.
 func NewTodoRepository(db *gorm.DB) TodoRepository {
 	return &todoRepository{db}
 }
@@ -37,26 +37,37 @@ func (r *todoRepository) Create(todo *domain.Todo) error {
 }
 
 func (r *todoRepository) GetAll() ([]domain.Todo, error) {
-	var todos []domain.Todo
+	var todos []domain.Todo //menggunakan tipe data slice
+	//&todos adalah alamat memori dari slice todos, sehingga data hasil query dapat langsung dimasukkan ke dalam slice tersebut.
 	err := r.db.Find(&todos).Error
 	return todos, err
 }
 
 func (r *todoRepository) GetByID(id uint) (*domain.Todo, error) {
+	//mengambil satu objek Todo berdasarkan ID
 	var todo domain.Todo
+	//untuk mengambil satu entitas pertama yang memiliki ID sesuai dengan nilai id yang diberikan
+	//Data entitas tersebut kemudian dimasukkan ke variabel todo
 	err := r.db.First(&todo, id).Error
 	return &todo, err
 }
 
 func (r *todoRepository) Update(todo *domain.Todo) error {
+	//menyimpan perubahan pada objek todo ke dalam database.
 	return r.db.Save(todo).Error
 }
 
+//
 func (r *todoRepository) Delete(id uint) error {
+	//menentukan tabel atau model data yang akan dihapus
+	//hanya entitas dengan ID yang sesuai yang akan dihapus
 	return r.db.Delete(&domain.Todo{}, id).Error
 }
 
+//
 func (r *todoRepository) MarkAsCompleted(id uint) error {
+	//&domain.Todo{} menunjukkan model data atau tabel yang akan dimodelkan
+	//memperbarui kolom completed dan completed_at dari record yang memiliki ID sesuai dengan parameter id dari tabel todos.
 	return r.db.Model(&domain.Todo{}).Where("id = ?", id).Updates(map[string]interface{}{
 		"completed":     true,
 		"completed_at":  time.Now(),
@@ -65,6 +76,7 @@ func (r *todoRepository) MarkAsCompleted(id uint) error {
 
 func (r *todoRepository) GetCompleted() ([]domain.Todo, error) {
 	var completedTodos []domain.Todo
+	//mengekstrak semua record dari tabel todos yang memiliki completed = true ke dalam slice completedTodos.
 	err := r.db.Where("completed = ?", true).Find(&completedTodos).Error
 	return completedTodos, err
 }
