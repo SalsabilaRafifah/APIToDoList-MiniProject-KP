@@ -2,10 +2,12 @@ package http
 
 import (
 	"strconv"
+	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 	"github.com/salsabilarafifah/API-ToDoList/internal/domain"
 	"github.com/salsabilarafifah/API-ToDoList/internal/usecase"
-	"github.com/gin-gonic/gin"
 )
 
 //untuk menangani operasi CRUD pada TODO.
@@ -21,7 +23,7 @@ func NewTodoHandler(todoUseCase usecase.TodoUseCase) *TodoHandler {
 func (h *TodoHandler) Create(c *gin.Context) {
 	// Struktur untuk mengambil data dari body request
 	type TodoCreateInput struct {
-		Title       string `json:"title"`
+		Title       string `json:"title" binding:"required"`
 		Description string `json:"description"`
 	}
 
@@ -33,6 +35,12 @@ func (h *TodoHandler) Create(c *gin.Context) {
 		return
 	}
 
+	// Menambahkan validasi bahwa title harus diisi dan tidak hanya karakter spasi
+	if input.Title == "" || len(strings.TrimSpace(input.Title)) == 0 {
+		c.JSON(400, gin.H{"error": "title is required and cannot consist only of spaces"})
+		return
+	}
+
 	// Membuat objek Todo dengan nilai default Completed: false
 	todo := &domain.Todo{
 		Title:       input.Title,
@@ -40,7 +48,7 @@ func (h *TodoHandler) Create(c *gin.Context) {
 		Completed:   false,
 	}
 
-	//Memanggil Create dari todoUseCase untuk menyimpan Todo ke dalam penyimpanan data.
+	// Memanggil Create dari todoUseCase untuk menyimpan Todo ke dalam penyimpanan data.
 	if err := h.todoUseCase.Create(todo); err != nil {
 		c.JSON(500, gin.H{"error": "error creating todo"})
 		return

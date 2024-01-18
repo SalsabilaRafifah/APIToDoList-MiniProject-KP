@@ -2,23 +2,14 @@
 
 package usecase
 
-import "github.com/salsabilarafifah/API-ToDoList/internal/domain"
+import (
+	"github.com/salsabilarafifah/API-ToDoList/internal/domain"
+	"github.com/salsabilarafifah/API-ToDoList/internal/repository"
+)
 
-//interface yang mendefinisikan kontrak untuk operasi CRUD pada entitas Todo.
-//sebagai dependensi untuk use case.
-type TodoRepository interface {
-	Create(todo *domain.Todo) error
-	GetAll() ([]domain.Todo, error)
-	GetByID(id uint) (*domain.Todo, error)
-	Update(todo *domain.Todo) error
-	Delete(id uint) error
-	MarkAsCompleted(id uint) error
-	GetCompleted() ([]domain.Todo, error)
-	GetUnCompleted() ([]domain.Todo, error)
-}
-
-//interface yang mendefinisikan kontrak untuk operasi bisnis pada entitas Todo.
-//sebagai abstraksi antarmuka bagi use case yang akan diimplementasikan.
+// Interface lebih berguna ketika ada logika kompleks atau kebutuhan untuk bergantung pada berbagai implementasi.
+// interface yang mendefinisikan kontrak untuk operasi bisnis pada entitas Todo.
+// sebagai abstraksi antarmuka bagi use case yang akan diimplementasikan.
 type TodoUseCase interface {
 	Create(todo *domain.Todo) error
 	GetAll() ([]domain.Todo, error)
@@ -30,19 +21,18 @@ type TodoUseCase interface {
 	GetUnCompleted() ([]domain.Todo, error)
 }
 
-//implementasi konkret dari TodoUseCase.
-//Struct menyimpan instance dari TodoRepository sebagai properti.
+// implementasi konkret dari TodoUseCase.
+// Struct menyimpan instance dari TodoRepository sebagai properti.
 type todoUseCase struct {
-	todoRepository TodoRepository
+	todoRepository repository.TodoRepository
 }
 
-//Parameter todoRepository adalah instance dari interface TodoRepository digunakan sebagai dependensi untuk menghubungkan 'todoUseCase dengan lapisan repository
-//Function konstruktor untuk membuat dan mengembalikan instance baru dari todoUseCase dengan tipe data TodoUseCase yang merupakan interface operasi bisnis pada Todo
-func NewTodoUseCase(todoRepository TodoRepository) TodoUseCase {
+// Parameter todoRepository adalah instance dari interface TodoRepository digunakan sebagai dependensi untuk menghubungkan 'todoUseCase dengan lapisan repository
+// Function konstruktor untuk membuat dan mengembalikan instance baru dari todoUseCase dengan tipe data TodoUseCase yang merupakan interface operasi bisnis pada Todo
+func NewTodoUseCase(todoRepository repository.TodoRepository) TodoUseCase {
 	return &todoUseCase{todoRepository}
 }
 
-//uc 
 func (uc *todoUseCase) Create(todo *domain.Todo) error {
 	return uc.todoRepository.Create(todo)
 }

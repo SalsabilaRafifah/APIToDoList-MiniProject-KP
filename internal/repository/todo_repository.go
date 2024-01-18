@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//Interface lebih berguna ketika ada logika kompleks atau kebutuhan untuk bergantung pada berbagai implementasi.
 //interface yang mendefinisikan kontrak untuk operasi CRUD pada entitas Todo
 type TodoRepository interface {
 	Create(todo *domain.Todo) error
