@@ -1,3 +1,3 @@
 <h1>MINI PROJECT KERJA PRAKTIK</h1>
 
-<p>API CRUD Dasar untuk Aplikasi ToDoList menggunakan konsep Clean Architecture terhubung ke database PostgreSQL melalui GORM dan framework Gin</p>
+<p>API CRUD dasar untuk Aplikasi ToDoList menggunakakan konsep Clean Architecture dan framework Gin untuk menangani permintaan http dengan terhubung ke database PostgreSQL melalui library GORM</p>
