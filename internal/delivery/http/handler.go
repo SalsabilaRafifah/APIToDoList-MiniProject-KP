@@ -35,9 +35,13 @@ func (h *TodoHandler) Create(c *gin.Context) {
 		return
 	}
 
-	// Menambahkan validasi bahwa title harus diisi dan tidak hanya karakter spasi
-	if input.Title == "" || len(strings.TrimSpace(input.Title)) == 0 {
-		c.JSON(400, gin.H{"error": "title is required and cannot consist only of spaces"})
+	// Menghapus spasi di awal dan di akhir input title dan description
+	input.Title = strings.TrimSpace(input.Title)
+	input.Description = strings.TrimSpace(input.Description)
+
+	// Menambahkan validasi bahwa title harus diisi
+	if input.Title == "" {
+		c.JSON(400, gin.H{"error": "title is required"})
 		return
 	}
 
