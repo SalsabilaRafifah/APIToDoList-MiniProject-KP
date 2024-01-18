@@ -19,6 +19,7 @@ type TodoUseCase interface {
 	MarkAsCompleted(id uint) error
 	GetCompleted() ([]domain.Todo, error)
 	GetUnCompleted() ([]domain.Todo, error)
+	SearchByTitle(title string) ([]*domain.Todo, error)
 }
 
 // implementasi konkret dari TodoUseCase.
@@ -63,4 +64,8 @@ func (uc *todoUseCase) GetCompleted() ([]domain.Todo, error) {
 
 func (uc *todoUseCase) GetUnCompleted() ([]domain.Todo, error) {
 	return uc.todoRepository.GetUnCompleted()
+}
+
+func (uc *todoUseCase) SearchByTitle(title string) ([]*domain.Todo, error) {
+	return uc.todoRepository.SearchByTitle(title)
 }

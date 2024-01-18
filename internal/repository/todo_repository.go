@@ -19,6 +19,7 @@ type TodoRepository interface {
 	MarkAsCompleted(id uint) error
 	GetCompleted() ([]domain.Todo, error)
 	GetUnCompleted() ([]domain.Todo, error)
+	SearchByTitle(title string) ([]*domain.Todo, error)
 }
 
 //implementasi konkret dari TodoRepository.
@@ -86,4 +87,11 @@ func (r *todoRepository) GetUnCompleted() ([]domain.Todo, error) {
     var unCompletedTodos []domain.Todo
     err := r.db.Where("completed = ?", false).Find(&unCompletedTodos).Error
     return unCompletedTodos, err
+}
+
+func (r *todoRepository) SearchByTitle(title string) ([]*domain.Todo, error) {
+	var todos []*domain.Todo
+	// Menggunakan Find dengan kondisi WHERE untuk melakukan pencarian berdasarkan judul.
+	err := r.db.Where("title LIKE ?", "%"+title+"%").Find(&todos).Error
+	return todos, err
 }

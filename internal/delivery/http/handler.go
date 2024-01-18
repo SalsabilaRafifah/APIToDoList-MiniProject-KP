@@ -195,3 +195,25 @@ func (h *TodoHandler) GetUnCompleted(c *gin.Context) {
 
     c.JSON(200, gin.H{"unCompletedTodos": unCompletedTodos})
 }
+
+func (h *TodoHandler) SearchByTitle(c *gin.Context) {
+	title := c.Param("title")
+	if title == "" {
+		c.JSON(400, gin.H{"error": "title parameter is required"})
+		return
+	}
+
+	// Memanggil metode SearchByTitle dari todoUseCase
+	todos, err := h.todoUseCase.SearchByTitle(title)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "error searching todos by title"})
+		return
+	}
+
+	if len(todos) == 0 {
+		c.JSON(200, gin.H{"message": "No todos found with the specified title"})
+		return
+	}
+
+	c.JSON(200, gin.H{"todos": todos})
+}
